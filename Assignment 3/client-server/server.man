@@ -1,0 +1,90 @@
+.TH server(1)
+
+.SH NAME
+.B server
+- multi-client server that listens for and executes client transactions on the specified port
+
+.SH SYNOPSIS
+.B server
+[port]
+
+.SH DESCRIPTION
+.B server
+is the consumer of the client-server application that consumes transactions sent by clients.
+
+.PP
+Messages sent to the server must be in the following format:
+.EX
+machinename.pid \\ t T<n> \\ t
+.EE
+Where 
+.B machinename
+is the name of the client sending the message, 
+.B pid
+is the process id of the client that acts as a unique identifier,
+.B T<n>
+is the transaction with n being the input to the transaction, and
+.B \\\\ t
+is the delimiter.
+
+.PP
+The server runs as follows:
+.RS
+.nf
+1. Creates a socket and binds to the port
+2. Listens for client connections and connects to clients
+3. Executes client transactions sent to the server
+4. Returns Done receipt to client along with its transaction id
+5. Logs all activity into `server.log`
+6. Timeouts out after 30 seconds of inactivity 
+.RE
+
+.PP
+.SH NOTES
+.PP
+This multi-client server does not use threads
+.PP
+If no <port> is provided, then the server falls back to port 8888
+
+.SH EXAMPLES
+.TP
+.BI ./server 8000
+.TP
+.PP
+Start a server that listens on port 8000
+
+
+.SH OPTIONS
+.IP "<port>"
+The port number that the server listens to for communications from clients. The
+port must be in the range 5,000 to 64,000
+
+
+.SH FILES
+.TP
+.I
+server.cpp
+.TP
+.I
+main.h
+.TP
+.I
+tands.cpp
+.TP
+.I
+utils.cpp
+
+
+.SH DIAGNOSTICS
+.PP
+The activity performed by this server is logged in the `server.log` file
+
+.SH COPYRIGHT
+.PP
+Copyright 2021 Weichen Qiu. All rights reserved
+
+.SH CREDITS
+.PP
+.nf
+https://www.binarytides.com/server-client-example-c-sockets-linux/
+https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/

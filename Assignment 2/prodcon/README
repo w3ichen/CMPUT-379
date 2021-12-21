@@ -1,0 +1,38 @@
+Name: Weichen Qiu
+Student ID: 1578205
+
+# Files
+
+1. main.h - header file containing all the function definitions
+2. main.cpp - main file that starts and ends the program
+3. threads.cpp - code executed by each thread
+4. tands.cpp - Trans() and Sleep() functions
+5. utils.cpp - common util functions used repeatedly
+6. Makefile - file that compiles the code and generates object (.o) files
+
+# Assumptions
+
+1. Assumption #1: command line inputs and text file inputs are the same as in the assignment description
+2. Assumption #2: all jobs are valid, that is one of 'T' or 'S'
+3. Assumption #3: an excessive number of threads is not used (tested for 3 threads)
+
+# Approach
+
+1. Read in all the jobs from std input into a queue called `all_jobs`
+2. Then create `nthreads` threads
+3. Create another queue called `jobs_queue` where each thread gets work from
+4. Iterate through `all_jobs` and add Trans jobs to `jobs_queue` and call Sleep() for 'S' jobs
+5. Each thread will get the first job from `jobs_queue` and execute Trans()
+6. If `jobs_queue` is full, the producer will wait
+7. If `jobs_queue` is empty, the consumer will wait
+8. During the execution of the threads, logs are written to the `.log` file and a `summary` map is updated with counted values
+
+# Compiling program
+
+1. Run `make` to compile the `./prodcon` executable
+2. Or run `make optimized` to compiled the optimized `./prodcon` executable
+
+# Running the program
+
+1. Execute `./prodcon <nthreads>`, where `nthreads` is the number of threads to create
+2. Execute `./prodcon <nthreads> <file_no>` to write the output to `prodcon.<file_no>.log` file instead of `prodcon.log`

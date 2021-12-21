@@ -1,0 +1,121 @@
+.TH client(1)
+
+.SH NAME
+.B client
+- a client that connects to and sends transactions to a server specified by its ip address and port number.
+
+.SH SYNOPSIS
+.B client
+[port] [ip_address]
+
+.SH DESCRIPTION
+.B client
+is the producer of the client-server application that produces transactions that are sent to the server for processing.
+
+.PP
+The client takes input from stdin, that is either through user input in the terminal or through an input file.
+The client will terminate once end-of-file (EOF) is reached. This can occur when the end of the input file is reached
+or when the user presses the ctrl+d command on the terminal.
+
+.PP
+The client can only perform two actions: 
+.RS
+1. 
+.B T<n>
+- Transaction. The parameter is an integer > 0. This command will be sent to the server
+for processing. The client sits idle waiting for the server to complete the transaction.
+.PP
+2. 
+.B S<n>
+- Sleep. This command simulates having the client wait between receiving new
+transactions to process. The client waits for a time determined by integer parameter
+n, with n between 0 and 100.
+.RE
+
+.PP
+Messages sent from the client to the server must be in the following format:
+.EX
+machinename.pid \\ t T<n> \\ t
+.EE
+Where 
+.B machinename
+is the name of the client sending the message, 
+.B pid
+is the process id of the client that acts as a unique identifier,
+.B T<n>
+is the transaction with n being the input to the transaction, and
+.B \\\\ t
+is the delimiter.
+
+.PP
+The client runs as follows:
+.RS
+.nf
+1. Creates a socket and connects to the server
+2. Sends all T<n> transactions to the server and waits for Done receipt
+3. Sleep on S<n> commands
+4. Logs all activity into `machinename.pid.log`
+5. When EOF is reached, closes connection to server and terminates
+.RE
+
+.PP
+.SH NOTES
+.PP
+The client will terminate if a connection to the server can not be established
+.PP
+If no <port> is provided, then the client falls back to port 8888
+.PP
+If no <ip_address> is provided, then the client falls back to ip address of 127.0.0.1
+
+.SH EXAMPLES
+.TP
+.BI ./client 8000 129.128.29.41
+.TP
+.PP
+Start a client that that connects to a server on port 8000 and ip address of 129.128.29.41
+.TP
+.BI ./client 8000 129.128.29.41 <client.in
+.TP
+.PP
+Starts a client that reads in commands from `client.in` file
+
+
+.SH OPTIONS
+.IP "<port>"
+The port number that the server listens to for communications from clients. The
+port must be in the range 5,000 to 64,000
+.IP "<ip_address>"
+The IP (Internet Protocol) address of the machine that is hosting the
+server which the client wants to connect to
+.IP "<inputfile"
+The file that the client should read the commands from. This is an optional argument
+
+
+.SH FILES
+.TP
+.I
+client.cpp
+.TP
+.I
+main.h
+.TP
+.I
+tands.cpp
+.TP
+.I
+utils.cpp
+
+
+.SH DIAGNOSTICS
+.PP
+The activity performed by this client is logged in the `machinename.pid.log` file
+
+.SH COPYRIGHT
+.PP
+Copyright 2021 Weichen Qiu. All rights reserved
+
+.SH CREDITS
+.PP
+.nf
+https://www.binarytides.com/server-client-example-c-sockets-linux/
+https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/
